@@ -6,7 +6,7 @@ RUN	go get -u golang.org/x/lint/golint \
      &&	cd azure-vhd-utils \
      &&	make
 
-FROM 	gardenlinux/slim
+FROM 	debian:testing-slim
 ENV	DEBIAN_FRONTEND noninteractive
 RUN	apt-get update \
      &&	apt-get install -y --no-install-recommends \
