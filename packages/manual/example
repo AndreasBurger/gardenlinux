@@ -8,5 +8,5 @@ apt-get source $src
 
 cd $src-*/
 donotmove="$(ls ..)"
-debuild
+debuild "${debuild_args}"
 move_package .. $donotmove

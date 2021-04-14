@@ -3,6 +3,7 @@ set -euo pipefail
 
 . $(dirname $0)/.helper
 . ${srcDir}/VERSION
+debuild_args="${1:-}"
 
 echo "### getting the keys of the maintainers"
 gpg --locate-keys torvalds@kernel.org gregkh@kernel.org
@@ -10,10 +11,10 @@ gpg --tofu-policy good 647F28654894E3BD457199BE38DBBDC86092693E
 # Steven Rostedt <rostedt@goodmis.org>
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 514B0EDE3C387F944FB3799329E574109AEBFAAA
 gpg --tofu-policy good 514B0EDE3C387F944FB3799329E574109AEBFAAA
-	
+
 echo "### installing minimal create requirements"
 sudo apt-get install --no-install-recommends -y equivs kernel-wedge python3-debian rsync libdistro-info-perl git
-echo "### pulling kernel and rt-patches" 
+echo "### pulling kernel and rt-patches"
 wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.{sign,xz}
 wget https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/$(cut -d. -f-2 <<< ${KERNEL_BASE})/older/patches-$KERNEL_RT_VERSION.tar.{sign,xz}
 xz -dc linux-$KERNEL_VERSION.tar.xz      | gpg --verify linux-$KERNEL_VERSION.tar.sign -
@@ -27,7 +28,7 @@ cd linux-$KERNEL_DEBIAN
 git -c advice.detachedHead=false checkout debian/$KERNEL_DEBIAN
 cd ..
 
-echo "### pulling aufs5 from upstream not from debian" 
+echo "### pulling aufs5 from upstream not from debian"
 git clone https://github.com/sfjro/aufs5-standalone.git
 cd aufs5-standalone
 git -c advice.detachedHead=false checkout aufs$(cut -d. -f-2 <<< ${KERNEL_BASE})
@@ -74,7 +75,7 @@ linux ($KERNEL_DEBIAN) UNRELEASED; urgency=medium
 EOF
 
 cd ..
-# checking out linux stable to have the whole changelog from the kernel readable for debian/bin/stable-update 
+# checking out linux stable to have the whole changelog from the kernel readable for debian/bin/stable-update
 git clone https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 cd $src
 
@@ -92,14 +93,14 @@ echo "### deviate needed packages and install"
 TMPDIR=.. mk-build-deps debian/control
 sudo apt-get install -y --no-install-recommends -f ../linux-build-deps_*_${KERNEL_ARCH}.deb
 # missing in dependencies on arm64
-#[ "${KERNEL_ARCH}"  == "arm64" ] && sudo apt install -y --no-install-recommends gcc-arm-linux-gnueabihf 
+#[ "${KERNEL_ARCH}"  == "arm64" ] && sudo apt install -y --no-install-recommends gcc-arm-linux-gnueabihf
 
 echo "### enabling control file (supposed to fail)"
 make -f debian/rules debian/control-real || /bin/true
 
 donotmove="$(ls ..)"
 echo "### build"
-debuild
+debuild "${debuild_args}"
 mv ../orig/linux_*.tar.xz ..
 rm -rf ../orig
 src=linux

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 . $(dirname $0)/.helper
+debuild_args="${1:-}"
 
 cat << EOF | sudo tee -a /etc/apt/sources.list
 deb http://deb.debian.org/debian unstable main
@@ -14,7 +15,7 @@ apt-get source $src
 
 cd $srv-*/
 donotmove="$(ls ..)"
-debuild
+debuild "${debuild_args}"
 move_package .. $donotmove
 
 #git clone https://gitlab.isc.org/isc-projects/kea.git

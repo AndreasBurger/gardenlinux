@@ -2,6 +2,7 @@
 set -euo pipefail
 
 . $(dirname $0)/.helper
+debuild_args="${1:-}"
 
 # preselect media-types
 sudo apt-get build-dep -y --no-install-recommends $src
@@ -14,5 +15,5 @@ dch -i 'remove libdb'
 dch -r ''
 
 donotmove="$(ls ..)"
-debuild
+debuild "${debuild_args}"
 move_package .. $donotmove

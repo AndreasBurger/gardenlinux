@@ -2,6 +2,7 @@
 set -euo pipefail
 
 . $(dirname $0)/.helper
+debuild_args="${1:-}"
 
 # preselect media-types
 sudo apt-get install media-types
@@ -20,6 +21,6 @@ dch -r ''
 debian/rules control-file
 
 donotmove="$(ls ..)"
-debuild
+debuild "${debuild_args}"
 move_package .. $donotmove
 
