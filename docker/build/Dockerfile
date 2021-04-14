@@ -30,7 +30,7 @@ RUN	apt-get update \
      &&	adduser dev --disabled-password --gecos dev \
      &&	adduser dev wheel
 
-USER	dev
-WORKDIR	/home/dev
+# USER	dev
+# WORKDIR	/home/dev
 
 RUN 	mkdir .gnupg && chmod 700 .gnupg
