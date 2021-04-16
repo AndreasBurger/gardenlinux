@@ -50,6 +50,25 @@ class TaskStep:
     name: str
     image: str
     script: str
+    volumeMounts: typing.List[typing.Dict]
+    env: typing.List[typing.Dict]
+
+    def __init__(self, name, image, script, use_secrets_server):
+        self.name = name
+        self.image = image
+        self.script = script
+        if use_secrets_server:
+            self.env = [{
+                'name': 'SECRETS_SERVER_CACHE',
+                'value': '/secrets/config.json',
+            }]
+            self.volumeMounts = [{
+                'name': 'secrets',
+                'mountPath': '/secrets',
+            }]
+        else:
+            self.env = []
+            self.volumeMounts = []
 
 
 @dataclasses.dataclass

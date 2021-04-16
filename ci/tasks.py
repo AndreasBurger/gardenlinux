@@ -18,15 +18,18 @@ def promote_task(
     flavourset: NamedParam,
     promote_target: NamedParam,
     publishing_actions: NamedParam,
-    repodir: NamedParam=_repodir,
-    giturl: NamedParam=_giturl,
+    use_secrets_server: bool,
+    repodir: NamedParam = _repodir,
+    giturl: NamedParam = _giturl,
     name='promote-gardenlinux-task',
     namespace='gardenlinux',
+
 ):
     clone_step = steps.clone_step(
         committish=committish,
         repo_dir=repodir,
         git_url=giturl,
+        use_secrets_server=use_secrets_server,
     )
 
     promote_step = steps.promote_step(
@@ -38,6 +41,7 @@ def promote_task(
         committish=committish,
         version=version,
         repo_dir=repodir,
+        use_secrets_server=use_secrets_server,
     )
 
     release_step = steps.release_step(
@@ -46,6 +50,7 @@ def promote_task(
         gardenlinux_epoch=gardenlinux_epoch,
         publishing_actions=publishing_actions,
         repo_dir=repodir,
+        use_secrets_server=use_secrets_server,
     )
 
     params = [
@@ -77,6 +82,7 @@ def promote_task(
 
 
 def build_task(
+    use_secrets_server: bool,
     namespace: str='gardenlinux',
 ):
     suite = NamedParam(name='suite', default='bullseye')
@@ -107,6 +113,7 @@ def build_task(
         committish=committish,
         repo_dir=repodir,
         git_url=giturl,
+        use_secrets_server=use_secrets_server,
     )
 
     task = tkn.model.Task(

@@ -168,6 +168,10 @@ def main():
         '--outfile',
         default='pipeline.yaml',
     )
+    parser.add_argument(
+        '--use-local-secrets',
+        action='store_false',
+    )
     parsed = parser.parse_args()
 
     build_yaml = parsed.pipeline_cfg

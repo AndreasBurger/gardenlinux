@@ -50,7 +50,6 @@ def task_step_script(
         args = ' '.join(param.name for param in params)
         callable_str = 'f{callable} {args}'
 
-
     return '\n'.join((
         shebang,
         preamble,
@@ -63,6 +62,7 @@ def clone_step(
     committish: tkn.model.NamedParam,
     repo_dir: tkn.model.NamedParam,
     git_url: tkn.model.NamedParam,
+    use_secrets_server: bool = True,
 ):
     step = tkn.model.TaskStep(
         name='clone-repo-step',
@@ -78,6 +78,7 @@ def clone_step(
             ],
             repo_path_param=repo_dir,
         ),
+        use_secrets_server=use_secrets_server,
     )
 
     return step
@@ -93,6 +94,7 @@ def upload_results_step(
     version: tkn.model.NamedParam,
     outfile: tkn.model.NamedParam,
     repo_dir: tkn.model.NamedParam,
+    use_secrets_server: bool = True,
 ):
     return tkn.model.TaskStep(
         name='upload-results',
@@ -112,7 +114,8 @@ def upload_results_step(
                 outfile,
             ],
             repo_path_param=repo_dir,
-        )
+        ),
+        use_secrets_server=use_secrets_server,
     )
 
 
@@ -127,6 +130,7 @@ def promote_single_step(
     promote_target: tkn.model.NamedParam,
     publishing_actions: tkn.model.NamedParam,
     repo_dir: tkn.model.NamedParam,
+    use_secrets_server: bool = True,
 ):
     return tkn.model.TaskStep(
         name='promote-step',
@@ -147,7 +151,8 @@ def promote_single_step(
                 publishing_actions,
             ],
             repo_path_param=repo_dir,
-        )
+        ),
+        use_secrets_server=use_secrets_server,
     )
 
 
@@ -160,6 +165,7 @@ def promote_step(
     committish: tkn.model.NamedParam,
     version: tkn.model.NamedParam,
     repo_dir: tkn.model.NamedParam,
+    use_secrets_server: bool = True,
 ):
     return tkn.model.TaskStep(
         name='finalise-promotion-step',
@@ -178,7 +184,8 @@ def promote_step(
                 version,
             ],
             repo_path_param=repo_dir,
-        )
+        ),
+        use_secrets_server=use_secrets_server,
     )
 
 
@@ -191,6 +198,7 @@ def pre_build_step(
     architecture: tkn.model.NamedParam,
     platform: tkn.model.NamedParam,
     repo_dir: tkn.model.NamedParam,
+    use_secrets_server: bool = True,
 ):
     return tkn.model.TaskStep(
         name='prebuild-step',
@@ -209,7 +217,8 @@ def pre_build_step(
                 platform,
             ],
             repo_path_param=repo_dir,
-        )
+        ),
+        use_secrets_server=use_secrets_server,
     )
 
 
@@ -219,6 +228,7 @@ def release_step(
     gardenlinux_epoch: tkn.model.NamedParam,
     publishing_actions: tkn.model.NamedParam,
     repo_dir: tkn.model.NamedParam,
+    use_secrets_server: bool = True,
 ):
     return tkn.model.TaskStep(
         name='release-step',
@@ -234,7 +244,8 @@ def release_step(
                 publishing_actions,
             ],
             repo_path_param=repo_dir,
-        )
+        ),
+        use_secrets_server=use_secrets_server,
     )
 
 
@@ -246,5 +257,6 @@ def build_image_step(
     modifiers: tkn.model.NamedParam,
     outfile: tkn.model.NamedParam,
     repodir: tkn.model.NamedParam,
+    use_secrets_server: bool = True,
 ):
     pass

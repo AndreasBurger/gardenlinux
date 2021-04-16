@@ -17,6 +17,10 @@ NamedParam = tkn.model.NamedParam
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--use-secrets-server',
+        action='store_false',
+    )
     parser.add_argument('--outfile', default='tasks.yaml')
 
     parsed = parser.parse_args()
@@ -35,15 +39,16 @@ def main():
         promote_target=NamedParam(name='promote_target'),
         publishing_actions=NamedParam(name='publishing_actions'),
         flavourset=NamedParam(name='flavourset'),
+        use_secrets_server=parsed.use_secrets_server,
     )
 
     raw_promote_task = dataclasses.asdict(promote_task)
-
 
     clone_step = steps.clone_step(
         committish=tkn.model.NamedParam(name='committish'),
         repo_dir=tkn.model.NamedParam(name='repodir'),
         git_url=tkn.model.NamedParam(name='giturl'),
+        use_secrets_server=parsed.use_secrets_server,
     )
 
     clone_step_dict = dataclasses.asdict(clone_step)
@@ -57,6 +62,7 @@ def main():
         architecture=NamedParam(name='architecture'),
         platform=NamedParam(name='platform'),
         repo_dir=tkn.model.NamedParam(name='repodir'),
+        use_secrets_server=parsed.use_secrets_server,
     )
 
     pre_build_step_dict = dataclasses.asdict(pre_build_step)
@@ -71,6 +77,7 @@ def main():
         version=NamedParam(name='version'),
         outfile=NamedParam(name='outfile'),
         repo_dir=tkn.model.NamedParam(name='repodir'),
+        use_secrets_server=parsed.use_secrets_server,
     )
 
     upload_step_dict = dataclasses.asdict(upload_step)
@@ -86,6 +93,7 @@ def main():
         promote_target=NamedParam(name='promote_target'),
         publishing_actions=NamedParam(name='publishing_actions'),
         repo_dir=tkn.model.NamedParam(name='repodir'),
+        use_secrets_server=parsed.use_secrets_server,
     )
 
     promote_step_dict = dataclasses.asdict(promote_step)
