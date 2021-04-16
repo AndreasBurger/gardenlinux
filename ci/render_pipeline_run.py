@@ -123,6 +123,7 @@ def main():
     parser.add_argument('--cicd-cfg', default='default')
     parser.add_argument('--pipeline-cfg', default=paths.flavour_cfg_path)
     parser.add_argument('--outfile', default='pipeline_run.yaml')
+    parser.add_argument('--namespace', default='gardenlinux')
     parser.add_argument('--flavour-set', default='all')
     parser.add_argument('--version', default=None)
     parser.add_argument(
@@ -146,15 +147,14 @@ def main():
         build_yaml=parsed.pipeline_cfg,
     )
 
-    if (version:=parsed.version) is None:
+    if (version := parsed.version) is None:
         # if version is not specify, derive from worktree (i.e. VERSION file)
         version = glci.model.next_release_version_from_workingtree()
-
 
     # XXX hardcode pipeline names and flavour for now
     pipeline_run = mk_pipeline_run(
         pipeline_name='gardenlinux-build',
-        namespace='gardenlinux',
+        namespace=parsed.namespace,
         branch=parsed.branch,
         committish=parsed.committish,
         gardenlinux_epoch=parsed.gardenlinux_epoch,

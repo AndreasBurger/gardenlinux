@@ -94,6 +94,7 @@ def mk_pipeline(
     gardenlinux_flavours: typing.Sequence[GardenlinuxFlavour],
     cicd_cfg_name: str,
     pipeline_flavour: glci.model.PipelineFlavour=glci.model.PipelineFlavour.SNAPSHOT,
+    namespace: str = 'gardenlinux'
 ):
     gardenlinux_flavours = set(gardenlinux_flavours) # mk unique
 
@@ -116,7 +117,7 @@ def mk_pipeline(
     pipeline = Pipeline(
         metadata=Metadata(
             name='gardenlinux-build',
-            namespace='gardenlinux',
+            namespace=namespace,
         ),
         spec=PipelineSpec(
             params=[
@@ -140,11 +141,13 @@ def mk_pipeline(
 def render_pipeline_dict(
     gardenlinux_flavours: typing.Sequence[GardenlinuxFlavour],
     cicd_cfg_name: str,
+    namespace: str = 'gardenlinux',
 ):
-    gardenlinux_flavours = set(gardenlinux_flavours) # mk unique
-    pipeline:dict = mk_pipeline(
+    gardenlinux_flavours = set(gardenlinux_flavours)  # mk unique
+    pipeline: dict = mk_pipeline(
         gardenlinux_flavours=gardenlinux_flavours,
         cicd_cfg_name=cicd_cfg_name,
+        namespace=namespace,
     )
 
     return pipeline
@@ -159,6 +162,10 @@ def main():
     parser.add_argument(
         '--flavour-set',
         default='all',
+    )
+    parser.add_argument(
+        '--namespace',
+        default='gardenlinux'
     )
     parser.add_argument(
         '--cicd-cfg',
@@ -184,17 +191,18 @@ def main():
     gardenlinux_flavours = set(flavour_set.flavours())
     outfile = parsed.outfile
 
-    pipeline:dict = render_pipeline_dict(
+    pipeline: dict = render_pipeline_dict(
         gardenlinux_flavours=gardenlinux_flavours,
         cicd_cfg_name=parsed.cicd_cfg,
+        namespace=parsed.namespace,
     )
-
 
     with open(outfile, 'w') as f:
         pipeline_raw = dataclasses.asdict(pipeline)
         yaml.safe_dump_all((pipeline_raw,), stream=f)
 
     print(f'dumped pipeline with {len(gardenlinux_flavours)} task(s) to {outfile}')
+
 
 if __name__ == '__main__':
     main()
