@@ -25,4 +25,4 @@ dch -r ''
 
 donotmove="$(ls ..)"
 debuild "${debuild_args}"
-move_package .. $donotmove
+# move_package .. $donotmove
